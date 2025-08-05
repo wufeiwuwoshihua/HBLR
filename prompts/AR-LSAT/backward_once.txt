@@ -1,0 +1,138 @@
+You are a reasoning assistant tasked with solving constraint-based ordering problems. Each problem consists of:
+
+1. A **Domain**: the range of possible positions (e.g., 1 to 5)
+2. A set of **Variables**: each representing the position of an entity (e.g., Kevin\_position ∈ \[1, 2, 3, 4, 5])
+3. A set of **Constraints** written in logic or natural language
+4. A list of **Candidate Options**, where each option assigns positions to all variables, either in direct variable form or through natural language orderings
+
+Your task is to determine **which candidate options satisfy all constraints**, using **backward chaining reasoning**.
+
+## Reasoning Strategy (Backward Chaining)
+
+1. **Start from the goal**: for each candidate option, your goal is to check whether the full assignment satisfies all the constraints.
+
+2. **Do not compute forward from constraints.** Instead, for each option, check whether it satisfies all necessary conditions implied by the constraints, one by one.
+
+3. For each constraint:
+
+   * Translate the condition into its logical form (e.g., "Ginny performs before Fernando" → `Ginny_position < Fernando_position`)
+   * Plug in the position values assigned by the option
+   * Verify whether the condition holds
+
+4. If **any constraint is violated**, the option is invalid.
+   If **all constraints are satisfied**, the option is valid.
+
+## Important Guidelines
+
+* Do not assume any constraint is irrelevant; all must be checked.
+* If an option is described in natural language, first convert it into a variable assignment.
+* Be explicit about which constraints pass and which fail.
+* Do not skip reasoning steps, even if the option is obviously wrong.
+* Only options that satisfy **all** constraints are valid.
+
+
+
+## Example Input
+### Domain
+
+- Positions: 1 (first performer) to 5 (last performer)
+
+### Variables
+
+- Fernando_position [IN] [1, 2, 3, 4, 5]
+- Ginny_position [IN] [1, 2, 3, 4, 5]
+- Hakim_position [IN] [1, 2, 3, 4, 5]
+- Juanita_position [IN] [1, 2, 3, 4, 5]
+- Kevin_position [IN] [1, 2, 3, 4, 5]
+
+### Constraints
+
+1. Ginny_position < Fernando_position
+   
+2. Kevin_position < Hakim_position
+   Kevin_position < Juanita_position
+   
+3. |Hakim_position - Fernando_position| = 1
+
+4. Each student (Fernando, Ginny, Hakim, Juanita, and Kevin) is assigned a unique position [1, 2, 3, 4, 5] for their performance. This ensures that no two performances overlap in timing, as each position corresponds to a distinct, non-overlapping time slot during the recital.
+
+### Queries for Options
+Which one of the following could be the order, from first to last, in which the students perform?
+
+A) Ginny_position = 1, Fernando_position = 2, Hakim_position = 3, Kevin_position = 4, Juanita_position = 5
+B) Ginny, Juanita, Kevin, Hakim, Fernando
+  
+C) Ginny_position = 1, Kevin_position = 2, Hakim_position = 3, Juanita_position = 4, Fernando_position = 5
+  
+D) Kevin_position = 1, Ginny_position = 2, Juanita_position = 3, Fernando_position = 4, Hakim_position = 5
+  
+E) Kevin_position = 1, Juanita_position = 2, Fernando_position = 3, Hakim_position = 4, Ginny_position = 5
+
+
+## Example Output
+We solve this problem using backward chaining reasoning. That means we start from each proposed option and check whether it satisfies all the constraints stated in the problem.
+
+Domain:
+The performance positions range from 1 (the first performer) to 5 (the last performer).
+
+Variables:
+Each student—Fernando, Ginny, Hakim, Juanita, and Kevin—is assigned a variable representing their position, which must be a unique number from 1 to 5.
+
+Constraints:
+
+1. Ginny must perform before Fernando. This means Ginny’s position number must be less than Fernando’s.
+2. Kevin must perform before both Hakim and Juanita. Kevin’s position must be less than Hakim’s, and also less than Juanita’s.
+3. Hakim must perform either immediately before or immediately after Fernando. In other words, the absolute difference between their position numbers must be exactly 1.
+4. Each student must be assigned a unique performance slot. This constraint is implicitly satisfied in all options.
+
+We now check each option:
+
+Option A:
+Ginny = 1, Fernando = 2, Hakim = 3, Kevin = 4, Juanita = 5
+Ginny is before Fernando: 1 < 2, which is valid.
+Kevin is before Juanita: 4 < 5, which is valid.
+Kevin is before Hakim: 4 < 3, which is false.
+Hakim is adjacent to Fernando: |3 - 2| = 1, which is valid.
+Conclusion: This option fails because Kevin is not before Hakim.
+
+Option B:
+The natural language description gives the order: Ginny, Juanita, Kevin, Hakim, Fernando
+This corresponds to: Ginny = 1, Juanita = 2, Kevin = 3, Hakim = 4, Fernando = 5
+Ginny is before Fernando: 1 < 5, valid.
+Kevin is before Hakim: 3 < 4, valid.
+Kevin is before Juanita: 3 < 2, false.
+Hakim is adjacent to Fernando: |4 - 5| = 1, valid.
+Conclusion: This option fails because Kevin is not before Juanita.
+
+Option C:
+Ginny = 1, Kevin = 2, Hakim = 3, Juanita = 4, Fernando = 5
+Ginny is before Fernando: 1 < 5, valid.
+Kevin is before Hakim: 2 < 3, valid.
+Kevin is before Juanita: 2 < 4, valid.
+Hakim is adjacent to Fernando: |3 - 5| = 2, which is false.
+Conclusion: This option fails because Hakim is not adjacent to Fernando.
+
+Option D:
+Kevin = 1, Ginny = 2, Juanita = 3, Fernando = 4, Hakim = 5
+Ginny is before Fernando: 2 < 4, valid.
+Kevin is before Hakim: 1 < 5, valid.
+Kevin is before Juanita: 1 < 3, valid.
+Hakim is adjacent to Fernando: |5 - 4| = 1, valid.
+Conclusion: This option satisfies all constraints.
+
+Option E:
+Kevin = 1, Juanita = 2, Fernando = 3, Hakim = 4, Ginny = 5
+Kevin is before Hakim: 1 < 4, valid.
+Kevin is before Juanita: 1 < 2, valid.
+Hakim is adjacent to Fernando: |4 - 3| = 1, valid.
+Ginny is before Fernando: 5 < 3, which is false.
+Conclusion: This option fails because Ginny is not before Fernando.
+
+Final conclusion:
+Only Option D satisfies all of the given constraints. Therefore, Option D is the correct answer.
+
+Final Answer: D
+
+## Input
+
+## Output

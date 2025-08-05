@@ -1,0 +1,50 @@
+The task is to generate a plan for determining whether the statement in question is true, false or unknown using a **backward verification approach**.
+
+The definition of the three options are:
+**True**: If assuming the question statement is true leads to results that are consistent with all the given premises under first-order-logic inference rules.
+**False**: If assuming the question statement is true leads to a contradiction with any of the given premises under first-order-logic inference rules.
+**Unknown**: If assuming the question statement is true neither leads to contradiction nor can be fully confirmed by the given premises using first-order-logic inference rules.
+
+The first-order-logic inference rules include but are not limited to: Modus Ponens, Modus Tollens, Generalization, Specialization, Conjunction, Elimination, Transitivity, Proof By Division Into Cases, Contradiction Rule, etc.
+
+Given the premises, you should derive a step-by-step plan that starts by **assuming the question statement is true**, and then uses first-order-logic inference rules to infer any necessary intermediate facts. Compare these inferred results with the premises to test for consistency, contradiction, or insufficiency.
+You can start with identifying the goal and then proceed step-by-step. If all deductions are consistent with the premises, the conclusion is **true**. If a contradiction is found, the conclusion is **false**. If neither is provable, then the conclusion is **unknown**.
+The output should be a complete plain-text reasoning plan strictly following the structure and style of the example provided earlier.
+-----
+Below is an example:
+Premises:
+1.NamedAfter(Cove(barutinCove), Settlement(barutin)) ∧ InBulgaria(Settlement(barutin))
+2.LocatedAt(Cove(barutinCove), Island(snowIsland))
+3.∀y(Island(y) → (y = snowIsland ∨ y = greenwichIsland ∨ y = deceptionIsland) → Includes(IslandsGroup(southShetlandIslands), y))
+4.PartOf(IslandsGroup(southShetlandIslands), Continent(antarctica))
+5. ∀x ∀y ∀z(LocatedIn(x, y) ∧ LocatedIn(y, z) → LocatedIn(x, z))
+
+Question: 
+∃x(Cove(x) ∧ LocatedIn(x, Continent(antarctica)) ∧ ∃y(NamedAfter(x, y) ∧ InBulgaria(y)))
+
+Plan:
+To prove the question statement using the given premises using a backward verification approach, we can follow these steps:
+1. Identify the Goal: Our goal is to verify whether the statement ∃x(Cove(x) ∧ LocatedIn(x, Continent(antarctica)) ∧ ∃y(NamedAfter(x, y) ∧ InBulgaria(y))) is true, false, or unknown based on the premises.
+2. Assume the Goal is True: Assume there exists a specific entity x such that x is a cove, x is located in Antarctica, and x is named after some y where y is in Bulgaria. Our task is to test whether this assumption leads to information that is consistent with the premises.
+3. Choose a Candidate for x: From Premise 1 and Premise 2, Barutin Cove is a suitable candidate. Let x = barutinCove.
+4. Verify Cove Identity: From Premise 1, NamedAfter(Cove(barutinCove), Settlement(barutin)) implies barutinCove is a cove. Therefore, Cove(barutinCove) holds.
+5. Verify NamedAfter and InBulgaria: From Premise 1, Settlement(barutin) is the entity barutinCove is named after, and InBulgaria(Settlement(barutin)) also holds. Therefore, ∃y(NamedAfter(barutinCove, y) ∧ InBulgaria(y)) is satisfied.
+6. Establish Location: From Premise 2, LocatedAt(Cove(barutinCove), Island(snowIsland)). Assume LocatedAt implies LocatedIn. So we have LocatedIn(barutinCove, snowIsland).
+7. Connect Island to Antarctica:
+   a. From Premise 3, since snowIsland is among the specified islands, we have Includes(IslandsGroup(southShetlandIslands), snowIsland).
+   b. From Premise 4, PartOf(IslandsGroup(southShetlandIslands), Continent(antarctica)) implies that South Shetland Islands are part of Antarctica.
+   c. Using Premise 5 (transitivity), LocatedIn(barutinCove, snowIsland) ∧ LocatedIn(snowIsland, southShetlandIslands) ∧ LocatedIn(southShetlandIslands, antarctica) ⇒ LocatedIn(barutinCove, antarctica).
+8. Consistency Check: All components of our assumption (barutinCove is a cove, located in Antarctica, named after a Bulgarian settlement) are supported by the premises through direct statements and logical inference. No contradiction arises from assuming the goal is true.
+9. Conclude: Since the assumption that the question statement is true leads to results that are consistent with all given premises, and no contradiction is found, the statement is verified as true.
+   This plan provides a clear backward reasoning approach that starts with the assumption of the goal’s truth and checks it against the premises using first-order logic rules to determine whether the conclusion holds.
+
+-----
+Below are the premises and questions you need to derive a plan to solve, please follow the instruction and example aforementioned.
+-----
+
+Context:
+[[CONTEXT]]
+
+-----
+
+Plan: Make sure you only derive the plan. Do not solve the question and do not determine the truth value of the conclusion at the planning stage. This plan will be used to help guiding a language model to follow step-by-step. The expected final step in the plan is to determine whether the the conclusion is true/false/unknown.

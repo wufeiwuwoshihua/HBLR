@@ -1,0 +1,126 @@
+You are a structural logic filter. Your task is to identify which sentences in a given natural language paragraph are not compatible with translation into First-Order Logic (FOL). A sentence is incompatible if it fails to meet any of the following structural criteria:
+1. It has a clear predicate-argument structure, such as "X has property Y" or "X does Y to Z".
+2. It includes explicit logical quantifiers or implications, such as "all", "some", "if...then...", etc.
+3. It is expressed in a standard propositional form, where the sentence can be reduced to atomic facts or clearly defined logical relations.
+
+Your output should be a list of sentences from the input paragraph that do not meet these criteria, along with a brief explanation of which structural rule(s) they violate.
+
+
+## Example Input:
+Problem:
+All people who regularly drink coffee are dependent on caffeine. People either regularly drink coffee or joke about being addicted to caffeine. No one who jokes about being addicted to caffeine is unaware that caffeine is a drug. Rina is either a student and unaware that caffeine is a drug, or neither a student nor unaware that caffeine is a drug. If Rina is not a person dependent on caffeine and a student, then Rina is either a person dependent on caffeine and a student, or neither a person dependent on caffeine nor a student.
+Question:
+Based on the above information, is the following statement true, false, or uncertain?
+Rina is either a person who jokes about being addicted to caffeine or is unaware that caffeine is a drug.
+
+## Example Output:
+### Analysis
+* Sentence 1 has a clear predicate-argument structure, includes a universal quantifier ("all"), and can be expressed as a conditional in propositional logic.
+* Sentence 2 uses an "either...or..." structure and links two well-formed predicates.
+* Sentence 3 uses a negative quantifier ("no one who...") and maps cleanly to a logical implication.
+* Sentence 4 expresses a binary disjunction with conjunctions, all using standard logical forms.
+* Sentence 5 is a conditional with nested logical disjunctions and conjunctions, all of which are structurally compatible.
+* The question itself is a disjunction of two atomic propositions, both of which are logically expressible.
+
+### Sentences not fit FOL
+None
+
+
+## Example Input:
+Problem:
+Miroslav Venhoda was a Czech choral conductor who specialized in the performance of Renaissance and Baroque music. Any choral conductor is a musician. Some musicians love music. Miroslav Venhoda published a book in 1946 called Method of Studying Gregorian Chant.
+Question:
+Based on the above information, is the following statement true, false, or uncertain? Miroslav Venhoda loved music.
+
+## Example Output:
+### Analysis
+1. Sentence: "Miroslav Venhoda was a Czech choral conductor who specialized in the performance of Renaissance and Baroque music."
+   Issue:
+   * This sentence **does not include explicit logical quantifiers** (`Rule 2`) and is **not in propositional form** (`Rule 3`).
+   * It contains a **descriptive appositive clause** (“who specialized...”) and **non-atomic information** (multiple properties nested in a single sentence), which makes it difficult to reduce to a single predicate-argument structure (`Rule 1`).
+   * It requires **complex semantic decomposition** (e.g., nationality, profession, and music specialization as distinct predicates), which is possible but not straightforward in basic FOL.
+
+2. Sentence: "Any choral conductor is a musician."
+   Valid:
+   * Clear universal quantifier ("any") → expressible as ∀x (ChoralConductor(x) → Musician(x))
+   * Fits predicate-argument and propositional structure.
+
+3. Sentence: "Some musicians love music."
+   Valid:
+   * Existential quantifier ("some") → ∃x (Musician(x) ∧ Loves(x, music))
+   * Meets all three structural criteria.
+
+4. Sentence: "Miroslav Venhoda published a book in 1946 called Method of Studying Gregorian Chant."
+   Issue:
+   * Though it can be decomposed into predicates like `Published(Miroslav, Book)` and `Title(Book, "...")`, the inclusion of a **specific title string** and **year of publication** requires **non-standard logical encoding** or **extra domain-specific functions** to handle time and naming.
+   * It lacks **standard logical form** (`Rule 3`) and does not have **explicit quantification or implication** (`Rule 2`).
+   * Still arguably expressible in extended FOL with additional assumptions but **not strictly compliant** with minimal FOL structure.
+
+5. Question: "Based on the above information, is the following statement true, false, or uncertain? Miroslav Venhoda loved music."
+   Valid as a query:
+   * The embedded proposition “Miroslav Venhoda loved music” is structurally compatible (can be expressed as `Loves(Miroslav, music)`).
+
+### Sentences not fit FOL
+1. *"Miroslav Venhoda was a Czech choral conductor who specialized in the performance of Renaissance and Baroque music."*
+2. *"Miroslav Venhoda published a book in 1946 called Method of Studying Gregorian Chant."*
+
+
+## Example Input:
+Problem:
+All employees who schedule a meeting with their customers will appear in the company today. Everyone who has lunch in the company schedules meetings with their customers. Employees will either have lunch in the company or have lunch at home. If an employee has lunch at home, then he/she is working remotely from home. All employees who are in other countries work remotely from home. No managers work remotely from home. James is either a manager and appears in the company today or neither a manager nor appears in the company today.
+Question:
+Based on the above information, is the following statement true, false, or uncertain? James has lunch in the company.
+
+## Example Output:
+### Analysis
+
+1. **"All employees who schedule a meeting with their customers will appear in the company today."**
+   **Valid**:
+   * Universal quantifier ("all")
+   * Conditional structure: ∀x (Employee(x) ∧ SchedulesMeetingWithCustomer(x) → AppearsInCompanyToday(x))
+   * Clear predicate-argument form
+
+2. **"Everyone who has lunch in the company schedules meetings with their customers."**
+   **Valid**:
+   * Universal quantifier ("everyone who...")
+   * Conditional: ∀x (HasLunchInCompany(x) → SchedulesMeetingWithCustomer(x))
+
+3. **"Employees will either have lunch in the company or have lunch at home."**
+   **Valid**:
+   * Disjunction over a class: ∀x (Employee(x) → HasLunchInCompany(x) ∨ HasLunchAtHome(x))
+
+4. **"If an employee has lunch at home, then he/she is working remotely from home."**
+   **Valid**:
+   * Implication with condition: ∀x (HasLunchAtHome(x) → WorksRemotely(x))
+   * Standard logical structure
+
+5. **"All employees who are in other countries work remotely from home."**
+   **Valid**:
+   * Universal quantifier over a subset: ∀x (Employee(x) ∧ InOtherCountry(x) → WorksRemotely(x))
+
+6. **"No managers work remotely from home."**
+   **Valid**:
+   * Negative quantifier: ∀x (Manager(x) → ¬WorksRemotely(x))
+   * Clear implication and predicate structure
+
+7. **"James is either a manager and appears in the company today or neither a manager nor appears in the company today."**
+   **Valid**:
+   * Complex disjunction: (Manager(James) ∧ AppearsInCompanyToday(James)) ∨ (¬Manager(James) ∧ ¬AppearsInCompanyToday(James))
+   * Fully propositional
+
+8. **Question: "Based on the above information, is the following statement true, false, or uncertain? James has lunch in the company."**
+   **Valid query**:
+   * Atomic proposition: HasLunchInCompany(James)
+
+### Sentences not fit FOL
+None
+
+
+
+## Input
+Problem:
+[[PROBLEM]]
+Question:
+[[QUESTION]]
+
+## Output

@@ -1,0 +1,64 @@
+The task is to generate a plan for determining whether the statement in question is true, false or unknown using a **backward verification approach**.
+
+The definition of the three options are:
+**True**: If assuming the question statement is true leads to results that are consistent with all the given premises under first-order-logic inference rules.
+**False**: If assuming the question statement is true leads to a contradiction with any of the given premises under first-order-logic inference rules.
+**Unknown**: If assuming the question statement is true neither leads to contradiction nor can be fully confirmed by the given premises using first-order-logic inference rules.
+
+The first-order-logic inference rules include but are not limited to: Modus Ponens, Modus Tollens, Generalization, Specialization, Conjunction, Elimination, Transitivity, Proof By Division Into Cases, Contradiction Rule, etc.
+
+Given the premises, you should derive a step-by-step plan that starts by **assuming the question statement is true**, and then uses first-order-logic inference rules to infer any necessary intermediate facts. Compare these inferred results with the premises to test for consistency, contradiction, or insufficiency.
+You can start with identifying the goal and then proceed step-by-step. If all deductions are consistent with the premises, the conclusion is **true**. If a contradiction is found, the conclusion is **false**. If neither is provable, then the conclusion is **unknown**.
+The output should be a complete plain-text reasoning plan strictly following the structure and style of the example provided earlier.
+
+You are now asked to use backward chaining. That is, you must begin with the conclusion you want to verify, and recursively break it down into subgoals that must be satisfied by the premises. At each step, you should look for inference rules or premises that can produce the current goal, and then treat the premises of those rules as new subgoals. This continues until you either:
+Reach base facts in the premises, in which case the subgoal is satisfied.
+Or you are unable to reduce the subgoal to known facts, in which case the subgoal cannot be satisfied.
+-----
+Below is an example:
+Premises:
+1.NamedAfter(Cove(barutinCove), Settlement(barutin)) ∧ InBulgaria(Settlement(barutin))
+2.LocatedAt(Cove(barutinCove), Island(snowIsland))
+3.∀y(Island(y) → (y = snowIsland ∨ y = greenwichIsland ∨ y = deceptionIsland) → Includes(IslandsGroup(southShetlandIslands), y))
+4.PartOf(IslandsGroup(southShetlandIslands), Continent(antarctica))
+5. ∀x ∀y ∀z(LocatedIn(x, y) ∧ LocatedIn(y, z) → LocatedIn(x, z))
+
+Question: 
+∃x(Cove(x) ∧ LocatedIn(x, Continent(antarctica)) ∧ ∃y(NamedAfter(x, y) ∧ InBulgaria(y)))
+
+Plan:
+1. Identify the goal: We want to determine whether there exists an x such that x is a cove, x is located in Antarctica, and there exists a y such that x is named after y and y is in Bulgaria.
+2. Choose a concrete candidate for x: Let x = barutinCove.
+3. Goal 1: Prove Cove(barutinCove).
+
+   * From Fact 1: NamedAfter(Cove(barutinCove), Settlement(barutin)) implies barutinCove is a cove.
+4. Goal 2: Prove LocatedIn(barutinCove, Continent(antarctica)).
+
+   * From Fact 2: LocatedAt(Cove(barutinCove), Island(snowIsland)) ⇒ LocatedIn(barutinCove, snowIsland) (assume LocatedAt implies LocatedIn).
+   * From Fact 3: Island(snowIsland) ⇒ Includes(IslandsGroup(southShetlandIslands), snowIsland).
+   * From the semantics of “Includes”: Includes(G, y) ⇒ LocatedIn(y, G). So LocatedIn(snowIsland, southShetlandIslands).
+   * From Fact 4: PartOf(IslandsGroup(southShetlandIslands), Continent(antarctica)) ⇒ LocatedIn(southShetlandIslands, antarctica).
+   * Apply Fact 5 (transitivity):
+
+     * LocatedIn(barutinCove, snowIsland)
+     * LocatedIn(snowIsland, southShetlandIslands)
+     * LocatedIn(southShetlandIslands, antarctica)
+       ⇒ LocatedIn(barutinCove, antarctica)
+5. Goal 3: Prove ∃y (NamedAfter(barutinCove, y) ∧ InBulgaria(y)).
+
+   * From Fact 1: NamedAfter(Cove(barutinCove), Settlement(barutin)) ∧ InBulgaria(Settlement(barutin))
+   * Let y = Settlement(barutin), then this goal is satisfied.
+6. All three goals have been individually satisfied for x = barutinCove.
+7. Therefore, ∃x (Cove(x) ∧ LocatedIn(x, antarctica) ∧ ∃y (NamedAfter(x, y) ∧ InBulgaria(y))) is supported by the premises.
+8. Final step: Determine whether the question statement is true, false, or unknown based on the above derivation.
+
+-----
+Below are the premises and questions you need to derive a plan to solve, please follow the instruction and example aforementioned.
+-----
+
+Context:
+[[CONTEXT]]
+
+-----
+
+Plan: Make sure you only derive the plan. Do not solve the question and do not determine the truth value of the conclusion at the planning stage. This plan will be used to help guiding a language model to follow step-by-step. The expected final step in the plan is to determine whether the the conclusion is true/false/unknown.

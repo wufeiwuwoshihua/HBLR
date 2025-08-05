@@ -1,0 +1,69 @@
+You are a formal reasoning assistant. Your task is to determine whether a given **conclusion** can be logically derived from a set of **premises**, using **backward reasoning** ("goal-driven" logic inference).
+In backward reasoning, you must start from the conclusion and work **step by step backward**, identifying the **minimal necessary conditions** that must hold for the conclusion to be true. Then you must check whether those conditions can themselves be derived from the premises.
+
+Reasoning Procedure:
+
+1. **State the target conclusion.**
+   What are we trying to prove?
+
+2. **Identify the minimal sufficient condition(s)** for that conclusion to be true, based on the premises.
+   (E.g., if `P → Q` is a premise and we want to prove `Q`, then we must try to prove `P`.)
+
+3. **Iteratively reduce the goal** to subgoals by chaining implications **backward** until you reach either:
+
+   * A known fact / assumption that proves the subgoal
+   * Or a point where the subgoal cannot be resolved
+
+4. **Check for disjunctions (A ∨ B)** in the premises:
+   You cannot assume either branch unless additional facts constrain which branch holds. Avoid overcommitting.
+
+5. If **all necessary conditions can be derived** from the premises → the conclusion is **True**
+   If the **negation leads to contradiction** → also **True**
+   If the **negation is supported** → **False**
+   If **neither can be determined** → **Uncertain**
+
+
+
+## Example Input
+Perform(x) ::: x performs in school talent shows often.\nAttendEngaged(x) ::: x attends and is very engaged with school events.\nInactive(x) ::: x is an inactive and disinterested member of their community.\nChaperone(x) ::: x chaperones high school dances.\nStudent(x) ::: x is a student who attends the school.\nYoungChildTeen(x) ::: x is a young child or teenager.\nWishFurther(x) ::: x wishes to further their academic careers and educational opportunities.\nPremises:\n∀x (Perform(x) → AttendEngaged(x))\n∀x (Perform(x) ⊕ Inactive(x))\n∀x (Chaperone(x) → ¬Student(x))\n∀x (Inactive(x) → Chaperone(x))\n∀x ((YoungChildTeen(x) ∧ WishFurther(x)) → Student(x))\nBonnie either both attends and is very engaged with school events and is a student who attends the school, or she neither attends and is very engaged with school events nor is a student who attends the school.\nConclusion:\nPerform(bonnie)
+
+## Example Output
+### Goal: Prove `Perform(bonnie)`
+
+### Step 1: Reduce the goal
+From the axiom:
+`Perform(x) ⊕ Inactive(x)`
+→ `Perform(bonnie)` is true **iff** `Inactive(bonnie)` is false.
+So we only need to prove:
+> `¬Inactive(bonnie)`
+
+### Step 2: Reduce further via implications
+We know:
+`Inactive(x) → Chaperone(x)`
+`Chaperone(x) → ¬Student(x)`
+So:
+> `Inactive(bonnie)` → `¬Student(bonnie)`
+> → Therefore, if `Student(bonnie)` is true, then `Inactive(bonnie)` must be false, and hence `Perform(bonnie)` is true.
+So it suffices to prove:
+> `Student(bonnie)`
+
+
+### Step 3: Examine the premise about Bonnie
+The premise says:
+> Either `(AttendEngaged(bonnie) ∧ Student(bonnie))`
+> or `(¬AttendEngaged(bonnie) ∧ ¬Student(bonnie))`
+This is a **disjunction**, not a definitive fact.
+So we **cannot conclude** whether `Student(bonnie)` is true or false.
+
+### Conclusion
+We cannot determine `Student(bonnie)`
+→ So cannot determine `¬Inactive(bonnie)`
+→ So cannot determine `Perform(bonnie)`
+
+### Answer: 
+Uncertain
+
+## Input
+[[CONTEXT]]
+
+## Output

@@ -1,0 +1,73 @@
+The task is to determine whether the statement in question is true, false or unknown。
+-----
+The definition of the three options are:
+True: If the premises can infer the question statement under first-order-logic inference rule
+False: If the premises can infer the negation of the question statement under the first-order-logic inference rule
+Unknown: If the premises cannot infer whether the question statement is true or false.
+-----
+The first-order-logic inference rules include but are not limited to: Modus Ponens, Modus Tollens, Generalization, Specialization, Conjunction, Elimination, Transitivity, Proof By Division Into Cases, Contradiction Rule, and etc.
+-----
+Given the premises, can you derive a step by step plan that can use the premises and first-order-logic inference rule to infer new knowledge if needed, in order to prove the statement? You can start with identifying the goal and break down the necessary logical inference step by step.
+
+You are now asked to use backward chaining. That is, you must begin with the conclusion you want to verify, and recursively break it down into subgoals that must be satisfied by the premises. At each step, you should look for inference rules or premises that can produce the current goal, and then treat the premises of those rules as new subgoals. This continues until you either:
+Reach base facts in the premises, in which case the subgoal is satisfied.
+Or you are unable to reduce the subgoal to known facts, in which case the subgoal cannot be satisfied.
+-----
+Below is an example:
+Predicates:
+Furry($x, bool) ::: Is x furry?
+Smart($x, bool) ::: Is x smart?
+Kind($x, bool) ::: Is x kind?
+Nice($x, bool) ::: Is x nice?
+Big($x, bool) ::: Is x big?
+Green($x, bool) ::: Is x green?
+Young($x, bool) ::: Is x young?
+
+Facts:
+Furry(Anne, True) ::: Anne is furry.
+Smart(Anne, True) ::: Anne is smart.
+Kind(Bob, True) ::: Bob is kind.
+Nice(Bob, True) ::: Bob is nice.
+Big(Charlie, True) ::: Charlie is big.
+Green(Charlie, True) ::: Charlie is green.
+Nice(Charlie, True) ::: Charlie is nice.
+Young(Charlie, True) ::: Charlie is young.
+Furry(Gary, True) ::: Gary is furry.
+Kind(Gary, True) ::: Gary is kind.
+Nice(Gary, True) ::: Gary is nice.
+Young(Gary, True) ::: Gary is young.
+Nice($x, True) >>> Kind($x, True) ::: All nice things are kind.
+Smart($x, True) >>> Nice($x, True) ::: Smart things are nice.
+Smart($x, True) && Kind($x, True) >>> Green($x, True) ::: All smart, kind things are green.
+Young($x, True) && Big($x, True) >>> Kind($x, True) ::: Young, big things are kind.
+Kind($x, True) && Smart($x, True) >>> Furry($x, True) ::: Kind, smart things are furry.
+Nice($x, True) && Big($x, True) >>> Young($x, True) ::: If something is nice and big then it is young.
+Green($x, True) >>> Big($x, True) ::: If something is green then it is big.
+Young($x, True) && Big($x, True) >>> Nice($x, True) ::: If Anne is young and Anne is big then Anne is nice.
+
+Question:
+Big(Bob, False) ::: Bob is not big.
+
+Plan: 
+1. Identify the goal: We want to determine whether Big(Bob, False) can be inferred.
+2. Rephrase this as a positive goal: Can we prove Big(Bob, True)? If so, the statement Big(Bob, False) would be false. If we cannot prove Big(Bob, True), then the statement may still be true or unknown.
+3. Try to prove Big(Bob, True) using backward chaining. Look for rules that conclude Big(\$x, True).
+4. Rule: Green(\$x, True) >>> Big(\$x, True). So to prove Big(Bob, True), we can try to prove Green(Bob, True).
+5. Rule: Smart(\$x, True) && Kind(\$x, True) >>> Green(\$x, True). So to prove Green(Bob, True), we need to prove both Smart(Bob, True) and Kind(Bob, True).
+6. Premise: Kind(Bob, True) is given.
+7. Premise: Smart(Bob, True) is not given, and cannot be derived from any available facts.
+8. Therefore, Green(Bob, True) cannot be proven.
+9. No other rules are found that could directly infer Big(Bob, True).
+10. Therefore, Big(Bob, True) cannot be derived.
+11. Thus, determine whether Big(Bob, False) is necessarily true, necessarily false, or unknown based on whether the positive form can be proven.
+12. Final step: Evaluate whether the statement Big(Bob, False) is true, false, or unknown based on the above reasoning.
+-----
+Below are the premises and questions you need to derive a plan to solve, please follow the instruction and example aforementioned.
+-----
+
+Context:
+[[CONTEXT]]
+
+-----
+
+Plan: Make sure you only derive the plan. Do not solve the question and do not determine the truth value of the conclusion at the planning stage. This plan will be used to help guiding a language model to follow step-by-step. The expected final step in the plan is to determine whether the the conclusion is true/false/unknown.

@@ -1,0 +1,82 @@
+You are given a list of statements, each consisting of a First-Order Logic (FOL) expression and its corresponding natural language (NL) sentence. Your task is to evaluate whether each FOL expression exactly and correctly matches the meaning of its paired natural language sentence. 
+
+You should leave the Predicates part and directly reoutput it in your Final Reformatted Output.
+For each statement:
+1. If the FOL and NL are **fully equivalent in meaning**, retain the **FOL** version.
+2. If the FOL **does not exactly match** the NL (due to logical mismatch, ambiguity, or incorrect translation), retain the **natural language** version instead.
+
+Your Output should stricted follow the fomart of the Example Output below. Your Final Reformatted Output must under a "### Final Reformatted Output" title.
+
+## Example Input
+Predicates:
+Predicates:\nJapaneseCompany(x) ::: x is a Japanese game company.\nCreated(x, y) ::: x created the game y.\nTop10(y) ::: y is in the Top 10 list.\nSells(y, z) ::: y sold z copies.\nSelected(y) ::: y is selected into the Top 10 list.
+
+Premises:
+∃x (JapaneseCompany(x) ∧ Created(x, legendOfZelda)) ::: A Japanese game company created the game the Legend of Zelda.
+∀y (Top10(y) → ∃x (JapaneseCompany(x) ∧ Created(x, y))) ::: All games in the Top 10 list are made by Japanese game companies.
+∀y (Sells(y, oneMillionCopies) → Selected(y)) ::: If a game sells more than one million copies, then it will be selected into the Top 10 list.
+Sells(legendOfZelda, oneMillionCopies) ::: The Legend of Zelda sold more than one million copies.
+Conclusion:
+¬Top10(legendOfZelda) ::: The Legend of Zelda is not in the Top 10 list.
+
+## Example Output
+### Premises Evaluation
+#### 1.
+FOL: ∃x (JapaneseCompany(x) ∧ Created(x, legendOfZelda))
+NL: A Japanese game company created the game the Legend of Zelda.
+Match?: Yes.
+* This FOL states that there exists some x such that x is a Japanese company and x created Legend of Zelda, which aligns with the NL.
+  **→ Retain:** `∃x (JapaneseCompany(x) ∧ Created(x, legendOfZelda))`
+
+#### 2.
+FOL: ∀y (Top10(y) → ∃x (JapaneseCompany(x) ∧ Created(x, y)))
+NL: All games in the Top 10 list are made by Japanese game companies.
+Match?: Yes.
+* This correctly says that for any game y, if y is in the Top 10, then there exists a Japanese company x that created y.
+  **→ Retain:** `∀y (Top10(y) → ∃x (JapaneseCompany(x) ∧ Created(x, y)))`
+
+#### 3.
+FOL: ∀y (Sells(y, oneMillionCopies) → Selected(y))
+NL: If a game sells more than one million copies, then it will be selected into the Top 10 list.
+Match?: No.
+* FOL says: If a game sells more than a million copies, then it is **Selected(y)** — but "Selected" is not clearly defined.
+* NL implies **selection into the Top 10 list**, which suggests `Top10(y)`, but that’s not reflected in the FOL.
+* Since the predicate `Selected` is vague and doesn’t map precisely to "Top 10 list", this is an **incorrect or ambiguous** translation.
+  **→ Retain:** *Natural language version* — "If a game sells more than one million copies, then it will be selected into the Top 10 list."
+
+#### 4.
+FOL: Sells(legendOfZelda, oneMillionCopies)
+NL: The Legend of Zelda sold more than one million copies.
+Match?: Yes.
+* Direct and accurate.
+  **→ Retain:** `Sells(legendOfZelda, oneMillionCopies)`
+
+
+### Conclusion Evaluation
+#### 5.
+FOL: ¬Top10(legendOfZelda)
+NL: The Legend of Zelda is not in the Top 10 list.
+Match?: Yes.
+* This is a direct logical negation expressing exactly what the NL says.
+  **→ Retain:** `¬Top10(legendOfZelda)`
+
+### Final Reformatted Output
+Predicates:
+JapaneseCompany(x) ::: x is a Japanese game company.
+Created(x, y) ::: x created the game y.
+Top10(y) ::: y is in the Top 10 list.
+Sells(y, z) ::: y sold z copies.
+Selected(y) ::: y is selected into the Top 10 list.
+Premises:
+∃x (JapaneseCompany(x) ∧ Created(x, legendOfZelda))
+∀y (Top10(y) → ∃x (JapaneseCompany(x) ∧ Created(x, y)))
+If a game sells more than one million copies, then it will be selected into the Top 10 list.
+Sells(legendOfZelda, oneMillionCopies)
+Conclusion:
+¬Top10(legendOfZelda)
+
+
+## Input
+[[CONTEXT]]
+
+## Output

@@ -1,0 +1,75 @@
+You are given a **Constraint Optimization (CO)** task that includes the following fixed structure:
+* A **Domain** section defining the scope of the task (e.g., performance slots 1–5)
+* A **Variables** section listing decision variables and their domains (e.g., position assignments for each student)
+* A **Constraints** section that encodes rules as both **CO logic expressions** and their corresponding **natural language** descriptions
+* A **Queries for Options** section presenting multiple possible variable assignments, each labeled A–E, and described in both **natural language orderings** and their corresponding **variable assignments**
+
+### Your Task:
+Only analyze the **Constraints** and **Queries for Options** sections.
+For each **CO + NL pair** within those sections:
+1. If the **CO expression accurately and completely captures** the meaning of the NL description — with no mismatch, omission, or ambiguity — output the **CO constraint or assignment only**, prefixed with `[CO]`.
+2. If the CO expression **does not exactly match** the NL description, due to logical differences or translation errors, output the **natural language sentence instead**, prefixed with `[NL]`.
+
+The **Domain** and **Variables** sections must be left **unchanged and untouched**.
+
+
+### Example CO Task Input (Excerpt):
+
+#### Constraints
+* **Ginny Before Fernando**:
+
+  * Ginny\_position < Fernando\_position
+
+* **Kevin Before Hakim and Juanita**:
+
+  * Kevin\_position < Hakim\_position
+  * Kevin\_position < Juanita\_position
+
+* **Hakim Either Immediately Before or After Fernando**:
+
+  * |Hakim\_position - Fernando\_position| = 1
+
+* **Unique Performance Slots**:
+
+  * Each student (Fernando, Ginny, Hakim, Juanita, and Kevin) is assigned a unique position \[1, 2, 3, 4, 5]...
+
+#### Queries for Options
+
+* **A) Ginny, Fernando, Hakim, Kevin, Juanita**
+
+  * Ginny\_position = 1, Fernando\_position = 2, Hakim\_position = 3, Kevin\_position = 4, Juanita\_position = 5
+* ...
+
+
+### Output Format:
+
+Your output must follow the structure:
+## Domain
+<original Domain block>
+
+## Variables
+<original Variables block>
+
+## Constraints
+[CO] Ginny_position < Fernando_position ::: Ginny Before Fernando
+[NL] Kevin performs before either Hakim or Juanita  
+[CO] |Hakim_position - Fernando_position| = 1 ::: Hakim Either Immediately Before or After Fernando
+[NL] Each student is assigned a unique time slot between 1 and 5 
+
+## Queries for Options
+[CO] A) Ginny_position = 1, Fernando_position = 2, Hakim_position = 3, Kevin_position = 4, Juanita_position = 5  ::: Ginny, Fernando, Hakim, Kevin, Juanita
+[NL] B) Ginny performs before Juanita, then Kevin, then Hakim, then Fernando  
+...
+
+
+### Notes:
+
+* When you choose [CO], keep the NL right after it, but when you choose NL, throw the CO away
+* Do not modify Domain or Variables sections
+* Do not add extra comments or reasoning in your output
+* Do not add extra comments or reasoning in your output
+
+### Input
+[[CONTEXT]]
+
+### Output

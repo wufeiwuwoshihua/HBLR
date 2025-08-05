@@ -1,0 +1,71 @@
+You are given a **Constraint Optimization (CO)** task that includes the following fixed structure:
+* A **Domain** section defining the scope of the task (e.g., performance slots 1–5)
+* A **Variables** section listing decision variables and their domains (e.g., position assignments for each student)
+* A **Constraints** section that encodes rules as both **CO logic expressions** and their corresponding **natural language** descriptions
+* A **Queries for Options** section presenting multiple possible variable assignments, each labeled A–E, and described in both **natural language orderings** and their corresponding **variable assignments**
+
+### Your Task:
+Only analyze the **Constraints** and **Queries** sections.
+For each **CO + NL pair** within those sections:
+1. If the **CO expression accurately and completely captures** the meaning of the NL description — with no mismatch, omission, or ambiguity — output the **CO constraint or assignment only**, prefixed with `[CO]`.
+2. If the CO expression **does not exactly match** the NL description, due to logical differences or translation errors, output the **natural language sentence instead**, prefixed with `[NL]`.
+
+The **Domain** and **Variables** sections must be left **unchanged and untouched**.
+
+
+### Example CO Task Input (Excerpt):
+Domain:
+1: leftmost
+5: rightmost
+Variables:
+quail [IN] [1, 2, 3, 4, 5]
+owl [IN] [1, 2, 3, 4, 5]
+raven [IN] [1, 2, 3, 4, 5]
+falcon [IN] [1, 2, 3, 4, 5]
+robin [IN] [1, 2, 3, 4, 5]
+Constraints:
+owl == 1 ::: The owl is the leftmost.
+robin < raven ::: The robin is to the left of the raven.
+quail == 5 ::: The quail is the rightmost.
+raven == 3 ::: The raven is the third from the left.
+AllDifferentConstraint([quail, owl, raven, falcon, robin]) ::: All birds have different values.
+Query:
+A) quail == 5 ::: The quail is the rightmost.
+B) owl == 5 ::: The owl is the rightmost.
+C) raven == 5 ::: The raven is the rightmost.
+D) falcon == 5 ::: The falcon is the rightmost.
+E) robin == 5 ::: The robin is the rightmost.
+
+
+### Output Format:
+
+Your output must follow the structure:
+Domain:
+<original Domain block>
+
+Variables:
+<original Variables block>
+
+Constraints:
+[CO] owl == 1 ::: The owl is the leftmost.
+[NL] The robin is to the left of the raven.
+[CO] quail == 5 ::: The quail is the rightmost.
+...
+
+Query:
+[CO] A) quail == 5 ::: The quail is the rightmost.
+[CO] B) owl == 5 ::: The owl is the rightmost.
+...
+
+
+### Notes:
+
+* When you choose [CO], keep the NL right after it, but when you choose NL, throw the CO away
+* Do not modify Domain or Variables sections
+* Do not add extra comments or reasoning in your output
+* Be more likely to keep CO, only keep NL when CO is totally wrong
+
+### Input
+[[CONTEXT]]
+
+### Output
